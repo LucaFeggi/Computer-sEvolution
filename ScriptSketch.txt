@@ -1,0 +1,150 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class Timer : MonoBehaviour
+{
+    public int StartigTime = 30000;
+    public float timeRemaining = 30000;
+    public bool timerIsRunning = false;
+    public Text timeText;
+    private void Start()
+    {
+        
+    }
+
+    void StartTimer{
+      // Starts the timer automatically
+        timerIsRunning = true;
+    }
+    void Update()
+    {
+        if (timerIsRunning)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                DisplayTime(timeRemaining);
+            }
+            else
+            {
+                Debug.Log("Time has run out!");
+                timeRemaining = 0;
+                timerIsRunning = false;
+            }
+        }
+    }
+    void DisplayTime(float timeToDisplay)
+    {
+        timeToDisplay += 1;
+        float minutes = Mathf.FloorToInt(timeToDisplay / 60); 
+        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+}
+
+public class GameManager : MonoBehaviour
+{ 
+   public int Coin = 0;
+   public int MaxClients = 1;
+   public int ActualClients = 0;
+   public int is_computer_working = 0; // 1 -> ha un cliente, 2 -> ha 2 clienti ecc...
+   //timer per la durata dei calcoli del computer
+   public Timer Client1Timer;
+   public Timer Client2Timer;
+   public Timer Client3Timer;
+   public Timer BoostTimer;
+   public bool IsBoosted = false;
+   public int CoinSpeed = 1;
+   public int CoinValue = 100;
+void Update(){
+
+   if(Client1Timer.timeRemaining < 100 && Client1Timer.timerIsRunning){
+      is_computer_working--;
+      ActualClients--;
+      Coin += CoinValue;
+   }
+
+       if(Client2Timer.timeRemaining < 100 && Client2Timer.timerIsRunning){
+      is_computer_working--;
+      ActualClients--;
+      Coin += CoinValue;
+   }
+
+  if(Client3Timer.timeRemaining < 100 && Client3Timer.timerIsRunning){
+      is_computer_working--;
+      ActualClients--;
+      Coin += CoinValue;
+   }
+
+   if(BoostTimer.timeRemaining < 100){
+      IsBoosted = false;
+   }
+   if(IsBoosted)
+    CoinSpeed = 2;
+    else
+    CoinSpeed = 1;
+    if(ActualClients != 0)
+        Coin += Coin * Coinspeed;
+    
+}
+
+	public void levelup(){
+
+        print("levelup");
+    }
+
+    public void clientup(){
+      if(coin > 1000){
+         coin -= 1000;
+         print("clientup");
+         MaxClients++
+      }
+
+    }
+
+    public void boost(){
+      if(coin > 100 && !BoostTimer.timerIsRunning){
+            coin -= 100;
+            IsBoosted = true;
+            BoostTimer.StartTimer();
+         
+ print("boost");
+      }
+   
+    }
+    
+    public void timeup(){
+ print("timeup");
+    }
+
+        public void client1(){
+         if(ActualClients < MaxClients  && is_computer_working  < MaxClients && !Client1Timer.timerIsRunning){
+            is_computer_working++;
+            Client1Timer.StartTimer();
+              ActualClients++;
+ print("client1");
+         }
+
+    }
+        public void client2(){
+            if(ActualClients < MaxClients && is_computer_working  < MaxClients && !Client2Timer.timerIsRunning){
+                 ActualClients++;
+                  is_computer_working++;
+                  Client2Timer.StartTimer();
+ print("client2");
+         }
+
+    }
+        public void client3(){
+            if(ActualClients < MaxClients && is_computer_working  < MaxClients && !Client3Timer.timerIsRunning){
+               ActualClients++;
+               Client3Timer.StartTimer();
+                is_computer_working++;
+ print("client3");
+         }
+
+    }
+
+}
